@@ -1,18 +1,72 @@
-<script setup lang="ts">
+<script setup lang="ts" xmlns="">
 import { RouterLink, RouterView } from 'vue-router'
 import { useMessageStore } from './stores/message';
 import { storeToRefs } from 'pinia';
 const store = useMessageStore();
 const { message } = storeToRefs(store);
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { useAuthStore} from "@/stores/auth";
+import {useRoute} from "vue-router"
+import router from "@/router";
+
+
+const authStore = useAuthStore();
+const route = useRoute();
+
+function logout() {
+  authStore.logout();
+  router.push({name: 'login'});
+
+}
+
+const token = localStorage.getItem('token');
+const user = localStorage.getItem('user');
+if (token && user) {
+  authStore.reload(token, JSON.parse(user))
+}else{
+  authStore.logout();
+}
+
+
 </script>
 
 <template>
-  <header>
+  <header class="max-h-screen leading-normal">
     <div id="flashMessage" v-if="message">
      <h4>{{ message }}</h4>
     </div>
     <nav>
-      <RouterLink :to="{ name: 'EventList' }">Home</RouterLink> | 
+      <nav class="flex">
+        <ul v-if="!authStore.currentUserName" class="flex navbar-nav ml-auto">
+          <li class="nav-item px-2">
+            <router-link to="/register" class="nav-link">
+              Sign Up
+              <font-awesome-icon icon="fa-solid fa-user-plus" />
+            </router-link>
+          </li>
+          <li class="nav-item px-2">
+            <router-link to="/login" class="nav-link">
+              Login
+              <font-awesome-icon icon="fa-solid fa-right-to-bracket" />
+            </router-link>
+          </li>
+        </ul>
+        <ul v-if="authStore.currentUserName" class="flex navbar-nav ml-auto">
+          <li class="nav-item px-2">
+            <router-link to="/profile" class="nav-link">
+              <font-awesome-icon icon="user" />
+              current user:
+              {{ authStore.currentUserName }}
+            </router-link>
+          </li>
+          <li class="nav-item px-2">
+            <a class="nav-link  hover:cursor-pointer" @click="logout">
+              <font-awesome-icon icon="sign-out-alt" /> LogOut
+            </a >
+          </li>
+        </ul>
+      </nav>
+      <RouterLink :to="{ name: 'EventList' }">Home</RouterLink> |
       <RouterLink :to="{ name: 'about' }">Organizers</RouterLink> |
       <RouterLink :to="{ name: 'add-org' }">New Organizer</RouterLink> |
       <RouterLink :to="{ name: 'add-event' }">New Event</RouterLink>

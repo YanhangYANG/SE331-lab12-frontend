@@ -12,8 +12,11 @@ export interface EventItem {
 }
 
 export interface EventOrganizer {
-    id: number
-    name: string
+    id: number;
+    name: string;
+    userId: number | null;
+    ownEvents: Event[];
+    // If there are other fields present in the response that are not in this interface, add them here.
 }
 
 

@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import EventListView from '../views/EventListView.vue'
+import LoginView from "@/views/LoginView.vue";
 import AboutView from '../views/OrgListView.vue'
 import StudentView from '../views/StudentView.vue'
 import MenuView from '../views/MenuView.vue'
@@ -41,6 +42,11 @@ const router = createRouter({
         page: parseInt((route.query?.page as string) || '1'),
         size: parseInt((route.query?.size as string) || '2')
       })
+    },
+    {
+        path: '/login',
+        name: 'login',
+        component: LoginView
     },
     {
       path: '/event/:id',
